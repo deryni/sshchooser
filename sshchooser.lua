@@ -83,11 +83,16 @@ local sshfns = {
 }
 
 if "string" == type(sshfn) then
+    if not sshfns[sshfn] then
+        logger.ef("Invalid SSH launcher: %s", sshfn)
+        return
+    end
+
     sshfn = sshfns[sshfn]
 end
 
-if not sshfns[sshfn] then
-    logger.ef("Invalid SSH function: %s", sshfn)
+if not sshfn then
+    logger.ef("No SSH launcher found.")
     return
 end
 

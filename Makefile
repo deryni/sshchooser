@@ -13,7 +13,8 @@ SOURCES := sshchooser.lua
 install: copy
 
 # TODO This is broken in that hammerspoon will not notice changes to this file
-# automatically.
+# automatically. Pathwatcher doesn't watch for changes to the target of
+# symlinks.
 .PHONY: symlink
 symlink: $(SOURCES)
 	@ln -v -s '$^' "$(HSHOME)/"

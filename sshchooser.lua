@@ -55,14 +55,14 @@ local sshfns = {
 local function load_config()
     local cfgfile = io.open(HOME.."/.hammerspoon/sshchooser.cfg")
     if cfgfile then
-        local env = {
+        local env = setmetatable({}, {__index = {
             HOME = HOME,
             logger = logger,
             sshkey = sshkey,
             sshmods = sshmods,
             sshfn = sshfn,
             shell_quote = shell_quote,
-        }
+        }})
 
         local cfgstr = cfgfile:read("*a")
         cfgfile:close()
@@ -71,13 +71,13 @@ local function load_config()
         if chunk then
             chunk()
 
-            if env.sshkey then
+            if rawget(env, "sshkey") then
                 sshkey = env.sshkey
             end
-            if env.sshmods then
+            if rawget(env, "sshmods") then
                 sshmods = env.sshmods
             end
-            if env.sshfn then
+            if rawget(env, "sshfn") then
                 if (("string" == env.sshfn) and sshfns[env.sshfn]) or
                    ("function" == sshfn)
                 then

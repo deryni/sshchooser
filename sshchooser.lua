@@ -1,3 +1,7 @@
+-- Default Configuration
+local sshmods = {"alt", "ctrl"}
+local sshkey = "p"
+
 local function ssh_get_hosts()
     local ssh_hosts = {}
 end
@@ -17,7 +21,7 @@ local function get_ssh_chooser()
     return sshchooser
 end
 
-hs.hotkey.bind({"alt", "ctrl"}, "p", function()
+hs.hotkey.bind(sshmods, sshkey, function()
     sshchooser = get_ssh_chooser()
     return sshchooser:show()
 end)

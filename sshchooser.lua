@@ -41,7 +41,28 @@ local function get_ssh_chooser()
     return sshchooser
 end
 
-hs.hotkey.bind(sshmods, sshkey, function()
-    sshchooser = get_ssh_chooser()
-    return sshchooser:show()
-end)
+local hotkey
+
+local function sethotkey
+    if hotkey then
+        hotkey:delete()
+    end
+
+    hotkey = hs.hotkey.bind(sshmods, sshkey, function()
+        sshchooser = get_ssh_chooser()
+        return sshchooser:show()
+    end)
+end
+
+sethotkey()
+
+local function ssh_reload(files)
+    for _, file in ipairs(files) do
+        if file:match("/sshchooser.cfg") then
+            sethotkey()
+            break
+        end
+    end
+end
+
+hs.pathwatcher.new(HOME.."/.ssh", ssh_reload):start()

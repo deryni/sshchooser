@@ -232,7 +232,7 @@ local function ssh_reload(files)
             file:match("/known_hosts$")
         then
             sshchooser:refreshChoicesCallback()
-        elseif file:match("/sshchooser.cfg") then
+        elseif file:match("/sshchooser.cfg$") then
             sethotkey()
         end
     end

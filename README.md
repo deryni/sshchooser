@@ -3,7 +3,7 @@ An SSH host chooser menu for Hammerspoon
 
 # Installation
 - Run `git clone https://github.com/deryni/sshchooser.git`
-- Run `ln -s /path/to/sshchooser/sshchooser.lua "$HOME/.hammerspoon/"`
+- Run `make install` (or `make all` for installation options)
 - Open Hammerspoon config and add `dofile("sshchooser.lua")`
 - Reload Hammerspoon (if you don't have automatic config reloading enabled)
 

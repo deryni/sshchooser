@@ -59,10 +59,10 @@ local function do_ssh(tab)
     if not ok then
         if "table" == type(res) then
             for k, v in pairs(res) do
-                logger.i(tostring(k).." = "..tostring(v))
+                logger.ef("%s = %s", tostring(k), tostring(v))
             end
         else
-            logger.i(res)
+            logger.e(res)
         end
     end
 end

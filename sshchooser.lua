@@ -29,19 +29,36 @@ end
 
 local function ssh_get_hosts()
     local ssh_hosts = {}
+    -- Store seen hosts to avoid duplicates.
+    -- Can't use the ssh_hosts table as hammerspoon doesn't like that.
+    local ssh_hosts_hack = {}
 
     local function add_config_entry(curhosts, hostname)
         if not curhosts then
             return
         end
 
-        for _, h in ipairs(curhosts) do
-            local curname = hostname and hostname:gsub("%%h", h)
+        -- Add static hostname to our duplicate table.
+        if hostname and (not hostname:find("%%")) then
+            ssh_hosts_hack[hostname] = true
+        end
 
-            ssh_hosts[#ssh_hosts + 1] = {
-                text = h,
-                subText = curname,
-            }
+        for _, h in ipairs(curhosts) do
+            if not ssh_hosts_hack[h] then
+                local curname = hostname and hostname:gsub("%%h", h)
+
+                ssh_hosts[#ssh_hosts + 1] = {
+                    text = h,
+                    subText = curname,
+                }
+
+                -- Add current host to our duplicate table.
+                ssh_hosts_hack[h] = true
+                -- Add expanded hostname to our duplicate table.
+                if curname and (not ssh_hosts_hack[curname]) then
+                    ssh_hosts_hack[curname] = true
+                end
+            end
         end
     end
 
@@ -84,11 +101,13 @@ local function ssh_get_hosts()
 
         for l in f:lines() do
             local st, en, hostname = string.find(l, "^([^%s,]+)")
-            if hostname then
+            if hostname and (not ssh_hosts_hack[hostname]) then
                 ssh_hosts[#ssh_hosts + 1] = {
                     text = hostname,
                     subText = "",
                 }
+                -- Add host to our duplicate table.
+                ssh_hosts_hack[hostname] = true
             end
         end
         f:close()

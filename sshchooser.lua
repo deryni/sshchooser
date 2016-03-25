@@ -78,21 +78,18 @@ local function load_config()
                 sshmods = env.sshmods
             end
             if env.sshfn then
-                sshfn = env.sshfn
+                if (("string" == env.sshfn) and sshfns[env.sshfn]) or
+                   ("function" == sshfn)
+                then
+                    sshfn = env.sshfn
+                else
+                    logger.wf("Invalid SSH launcher: %s", env.sshfn)
+                end
             end
         end
     end
 end
 load_config()
-
-if "string" == type(sshfn) then
-    if not sshfns[sshfn] then
-        logger.ef("Invalid SSH launcher: %s", sshfn)
-        return
-    end
-
-    sshfn = sshfns[sshfn]
-end
 
 if not sshfn then
     logger.ef("No SSH launcher found.")

@@ -1,7 +1,7 @@
 -- Default Configuration
 local sshkey = "p"
 local sshmods = {"alt", "ctrl"}
-local application = "iterm"
+local sshfn = "iterm"
 
 -- Code below here
 
@@ -30,8 +30,8 @@ if cfgfile then
         if env.sshmods then
             sshmods = env.sshmods
         end
-        if env.application then
-            application = env.application
+        if env.sshfn then
+            sshfn = env.sshfn
         end
     end
 end
@@ -61,9 +61,9 @@ local ascmds = {
         end tell]]
 }
 
-local ascmd = ascmds[application]
+local ascmd = ascmds[sshfn]
 if not ascmd then
-    logger.ef("Invalid application: %s", application)
+    logger.ef("Invalid application: %s", sshfn)
     return
 end
 
@@ -72,7 +72,7 @@ local function do_ssh(tab)
         return
     end
 
-    local ascmd = (ascmds[application]):format(shell_quote(tab.text))
+    local ascmd = (ascmds[sshfn]):format(shell_quote(tab.text))
 
     local ok, res = hs.applescript.applescript(ascmd)
     if not ok then

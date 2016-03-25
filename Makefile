@@ -21,3 +21,6 @@ symlink: $(SOURCES)
 .PHONY: copy
 copy: $(SOURCES)
 	@cp -v '$^' '$(HSHOME)/'
+
+.SUFFIXES:
+MAKEFLAGS += -rR

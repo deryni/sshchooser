@@ -27,6 +27,28 @@ end
 
 local function ssh_get_hosts()
     local ssh_hosts = {}
+
+    local function get_known_hosts()
+        local f = io.open(HOME.."/.ssh/known_hosts")
+        if not f then
+            return
+        end
+
+        for l in f:lines() do
+            local st, en, hostname = string.find(l, "^([^%s,]+)")
+            if hostname then
+                ssh_hosts[#ssh_hosts + 1] = {
+                    text = hostname,
+                    subText = "",
+                }
+            end
+        end
+        f:close()
+    end
+
+    get_known_hosts()
+
+    return ssh_hosts
 end
 
 local sshchooser

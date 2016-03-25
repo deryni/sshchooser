@@ -208,7 +208,7 @@ end
 
 local hotkey
 
-local function sethotkey
+local function sethotkey()
     if hotkey then
         hotkey:delete()
     end

@@ -12,6 +12,18 @@ end
 
 local logger = hs.logger.new('sshchooser', 'info')
 
+local function shell_quote(val)
+    if ("number" == type(val)) or tonumber(val) then
+        return val
+    end
+
+    if "string" ~= type(val) then
+        return
+    end
+
+    return "'"..val:gsub("'", [['\'']]).."'"
+end
+
 -- Load user configuration.
 local cfgfile = io.open(HOME.."/.hammerspoon/sshchooser.cfg")
 if cfgfile then
@@ -21,6 +33,7 @@ if cfgfile then
         sshkey = sshkey,
         sshmods = sshmods,
         sshfn = sshfn,
+        shell_quote = shell_quote,
     }
 
     local cfgstr = cfgfile:read("*a")
@@ -71,18 +84,6 @@ local sshfns = {
 
 if "string" == type(sshfn) then
     sshfn = sshfns[sshfn]
-end
-
-local function shell_quote(val)
-    if ("number" == type(val)) or tonumber(val) then
-        return val
-    end
-
-    if "string" ~= type(val) then
-        return
-    end
-
-    return "'"..val:gsub("'", [['\'']]).."'"
 end
 
 if not sshfns[sshfn] then

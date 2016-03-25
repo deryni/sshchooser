@@ -1,12 +1,14 @@
-local HOME = HOME or os.getenv("HOME")
-if not HOME then
-    return
-end
-
 -- Default Configuration
 local sshkey = "p"
 local sshmods = {"alt", "ctrl"}
 local application = "iterm"
+
+-- Code below here
+
+local HOME = HOME or os.getenv("HOME")
+if not HOME then
+    return
+end
 
 local logger = hs.logger.new('sshchooser', 'info')
 

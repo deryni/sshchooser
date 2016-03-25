@@ -15,7 +15,13 @@ local logger = hs.logger.new('sshchooser', 'info')
 -- Load user configuration.
 local cfgfile = io.open(HOME.."/.hammerspoon/sshchooser.cfg")
 if cfgfile then
-    local env = {}
+    local env = {
+        HOME = HOME,
+        logger = logger,
+        sshkey = sshkey,
+        sshmods = sshmods,
+        sshfn = sshfn,
+    }
 
     local cfgstr = cfgfile:read("*a")
     cfgfile:close()

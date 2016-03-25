@@ -31,8 +31,13 @@ local function ssh_get_hosts()
     local ssh_hosts = {}
 
     local function get_known_hosts()
-        local f = io.open(HOME.."/.ssh/known_hosts")
+        local f, err = io.open(HOME.."/.ssh/known_hosts")
         if not f then
+            logger.i("Failed to open known_hosts file.")
+            if err then
+                logger.i(err)
+            end
+
             return
         end
 

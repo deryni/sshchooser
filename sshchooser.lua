@@ -30,6 +30,47 @@ end
 local function ssh_get_hosts()
     local ssh_hosts = {}
 
+    local function add_config_entry(curhosts, hostname)
+        if not curhosts then
+            return
+        end
+
+        for _, h in ipairs(curhosts) do
+            local curname = hostname and hostname:gsub("%%h", h)
+
+            ssh_hosts[#ssh_hosts + 1] = {
+                text = h,
+                subText = curname,
+            }
+        end
+    end
+
+    local function get_config_hosts()
+        local f = io.open(HOME.."/.ssh/config")
+        if f then
+            local curhosts, canonical
+            for l in f:lines() do
+                local s, e = l:find("^Host ")
+                if s then
+                    add_config_entry(curhosts, canonical)
+
+                    curhosts, canonical = {}, nil
+                    for h in l:sub(e):gmatch("%S+") do
+                        curhosts[#curhosts + 1] = h
+                    end
+                else
+                    local tmp
+                    s, e, tmp = l:find("^Hostname (%S+)")
+                    if s then
+                        canonical = tmp
+                    end
+                end
+            end
+            add_config_entry(curhosts, canonical)
+            f:close()
+        end
+    end
+
     local function get_known_hosts()
         local f, err = io.open(HOME.."/.ssh/known_hosts")
         if not f then
@@ -53,6 +94,7 @@ local function ssh_get_hosts()
         f:close()
     end
 
+    get_config_hosts()
     get_known_hosts()
 
     return ssh_hosts

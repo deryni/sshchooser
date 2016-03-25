@@ -16,11 +16,11 @@ install: copy
 # automatically.
 .PHONY: symlink
 symlink: $(SOURCES)
-	@ln -v -s '$^' '$(HSHOME)/'
+	@ln -v -s '$^' "$(HSHOME)/"
 
 .PHONY: copy
 copy: $(SOURCES)
-	@cp -v '$^' '$(HSHOME)/'
+	@cp -v '$^' "$(HSHOME)/"
 
 .SUFFIXES:
 MAKEFLAGS += -rR

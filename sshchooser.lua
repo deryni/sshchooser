@@ -24,6 +24,33 @@ local function shell_quote(val)
     return "'"..val:gsub("'", [['\'']]).."'"
 end
 
+local sshfns = {
+    iterm = function(host)
+        local ascmd = [[
+        tell application "iTerm"
+                set myterm to (make new terminal)
+                tell myterm
+                    launch session "Default"
+                    tell the last session
+                        write text "exec ssh %s"
+                    end tell
+                end tell
+        end tell]]
+        ascmd = ascmd:format(shell_quote(host))
+
+        local ok, res = hs.applescript.applescript(ascmd)
+        if not ok then
+            if "table" == type(res) then
+                for k, v in pairs(res) do
+                    logger.ef("%s = %s", tostring(k), tostring(v))
+                end
+            else
+                logger.e(res)
+            end
+        end
+    end,
+}
+
 -- Load user configuration.
 local cfgfile = io.open(HOME.."/.hammerspoon/sshchooser.cfg")
 if cfgfile then
@@ -54,33 +81,6 @@ if cfgfile then
         end
     end
 end
-
-local sshfns = {
-    iterm = function(host)
-        local ascmd = [[
-        tell application "iTerm"
-                set myterm to (make new terminal)
-                tell myterm
-                    launch session "Default"
-                    tell the last session
-                        write text "exec ssh %s"
-                    end tell
-                end tell
-        end tell]]
-        ascmd = ascmd:format(shell_quote(host))
-
-        local ok, res = hs.applescript.applescript(ascmd)
-        if not ok then
-            if "table" == type(res) then
-                for k, v in pairs(res) do
-                    logger.ef("%s = %s", tostring(k), tostring(v))
-                end
-            else
-                logger.e(res)
-            end
-        end
-    end,
-}
 
 if "string" == type(sshfn) then
     if not sshfns[sshfn] then

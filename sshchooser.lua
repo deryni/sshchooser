@@ -27,6 +27,46 @@ if cfgfile then
     end
 end
 
+local function shell_quote(val)
+    if ("number" == type(val)) or tonumber(val) then
+        return val
+    end
+
+    if "string" ~= type(val) then
+        return
+    end
+
+    return "'"..val:gsub("'", [['\'']]).."'"
+end
+
+local function do_ssh(tab)
+    if not tab then
+        return
+    end
+
+    local ascmd = ([[
+        tell application "iTerm"
+                set myterm to (make new terminal)
+                tell myterm
+                    launch session "Default"
+                    tell the last session
+                        write text "exec ssh %s"
+                    end tell
+                end tell
+        end tell]]):format(shell_quote(tab.text))
+
+    local ok, res = hs.applescript.applescript(ascmd)
+    if not ok then
+        if "table" == type(res) then
+            for k, v in pairs(res) do
+                logger.i(tostring(k).." = "..tostring(v))
+            end
+        else
+            logger.i(res)
+        end
+    end
+end
+
 local function ssh_get_hosts()
     local ssh_hosts = {}
     -- Store seen hosts to avoid duplicates.

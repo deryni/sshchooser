@@ -1,16 +1,23 @@
 HSHOME = $$HOME/.hammerspoon
 
 all:
-	@echo "Run 'make install' to install via symlink."
+	@echo "Run 'make install' to install (via default method)."
 	@echo "Run 'make copy' to install via copy."
+	@echo "Run 'make install' to install via symlink (will not auto-reload on change with pathwatcher)."
 	@echo
 	@echo 'Hammerspoon directory: $(HSHOME)'
-	@echo "Override with 'HSHOME=/path/to/hammerspoon' on the 'make' command line."
+	@echo "Override with 'HSHOME=/path/to/.hammerspoon' on the 'make' command line."
 
-.PHONY: install
-install: sshchooser.lua
+SOURCES := sshchooser.lua
+
+install: copy
+
+# TODO This is broken in that hammerspoon will not notice changes to this file
+# automatically.
+.PHONY: symlink
+symlink: $(SOURCES)
 	@ln -v -s '$^' '$(HSHOME)/'
 
 .PHONY: copy
-copy: sshchooser.lua
+copy: $(SOURCES)
 	@cp -v '$^' '$(HSHOME)/'

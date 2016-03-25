@@ -20,7 +20,7 @@ symlink: $(SOURCES)
 
 .PHONY: copy
 copy: $(SOURCES)
-	@cp -v '$^' "$(HSHOME)/"
+	@install -C -S -v '$^' "$(HSHOME)/"
 
 .SUFFIXES:
 MAKEFLAGS += -rR

@@ -16,8 +16,11 @@ local logger = hs.logger.new('sshchooser', 'info')
 local cfgfile = io.open(HOME.."/.hammerspoon/sshchooser.cfg")
 if cfgfile then
     local env = {}
-    local chunk, err = load(cfgfile:read("*a"), "sshchooser.cfg", "t", env)
+
+    local cfgstr = cfgfile:read("*a")
     cfgfile:close()
+
+    local chunk, err = load(cfgstr, "sshchooser.cfg", "t", env)
     if chunk then
         chunk()
 

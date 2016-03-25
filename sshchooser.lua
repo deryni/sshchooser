@@ -25,6 +25,9 @@ if cfgfile then
         if env.sshmods then
             sshmods = env.sshmods
         end
+        if env.application then
+            application = env.application
+        end
     end
 end
 

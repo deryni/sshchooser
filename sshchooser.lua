@@ -52,35 +52,38 @@ local sshfns = {
 }
 
 -- Load user configuration.
-local cfgfile = io.open(HOME.."/.hammerspoon/sshchooser.cfg")
-if cfgfile then
-    local env = {
-        HOME = HOME,
-        logger = logger,
-        sshkey = sshkey,
-        sshmods = sshmods,
-        sshfn = sshfn,
-        shell_quote = shell_quote,
-    }
+local function load_config()
+    local cfgfile = io.open(HOME.."/.hammerspoon/sshchooser.cfg")
+    if cfgfile then
+        local env = {
+            HOME = HOME,
+            logger = logger,
+            sshkey = sshkey,
+            sshmods = sshmods,
+            sshfn = sshfn,
+            shell_quote = shell_quote,
+        }
 
-    local cfgstr = cfgfile:read("*a")
-    cfgfile:close()
+        local cfgstr = cfgfile:read("*a")
+        cfgfile:close()
 
-    local chunk, err = load(cfgstr, "sshchooser.cfg", "t", env)
-    if chunk then
-        chunk()
+        local chunk, err = load(cfgstr, "sshchooser.cfg", "t", env)
+        if chunk then
+            chunk()
 
-        if env.sshkey then
-            sshkey = env.sshkey
-        end
-        if env.sshmods then
-            sshmods = env.sshmods
-        end
-        if env.sshfn then
-            sshfn = env.sshfn
+            if env.sshkey then
+                sshkey = env.sshkey
+            end
+            if env.sshmods then
+                sshmods = env.sshmods
+            end
+            if env.sshfn then
+                sshfn = env.sshfn
+            end
         end
     end
 end
+load_config()
 
 if "string" == type(sshfn) then
     if not sshfns[sshfn] then

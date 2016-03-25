@@ -1,8 +1,11 @@
+local HOME = HOME or os.getenv("HOME")
+if not HOME then
+    return
+end
+
 -- Default Configuration
 local sshmods = {"alt", "ctrl"}
 local sshkey = "p"
-
-local HOME = HOME or os.getenv("HOME")
 
 -- Load user configuration.
 local cfgfile = io.open(HOME.."/.hammerspoon/sshchooser.cfg")

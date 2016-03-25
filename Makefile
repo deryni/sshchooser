@@ -17,7 +17,7 @@ install: copy
 # symlinks.
 .PHONY: symlink
 symlink: $(SOURCES)
-	@ln -v -s '$^' "$(HSHOME)/"
+	@ln -v -s '$(abspath $^)' "$(HSHOME)/"
 
 .PHONY: copy
 copy: $(SOURCES)

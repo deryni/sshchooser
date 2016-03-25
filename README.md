@@ -1,6 +1,12 @@
 # sshchooser
 An SSH host chooser menu for Hammerspoon
 
+# Installation
+- Run `git clone https://github.com/deryni/sshchooser.git`
+- Run `ln -s /path/to/sshchooser/sshchooser.lua "$HOME/.hammerspoon/"`
+- Open Hammerspoon config and add `dofile("sshchooser.lua")`
+- Reload Hammerspoon (if you don't have automatic config reloading enabled)
+
 # Configuration
 
 The default keybinding for the chooser is `Ctrl-Alt-p`.

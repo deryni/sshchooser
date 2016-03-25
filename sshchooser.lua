@@ -74,7 +74,7 @@ if not ascmd then
 end
 
 local function do_ssh(tab)
-    if not tab then
+    if (not tab) or (not tab.text) then
         return
     end
 

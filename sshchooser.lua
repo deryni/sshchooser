@@ -7,6 +7,8 @@ end
 local sshmods = {"alt", "ctrl"}
 local sshkey = "p"
 
+local logger = hs.logger.new('sshchooser', 'info')
+
 -- Load user configuration.
 local cfgfile = io.open(HOME.."/.hammerspoon/sshchooser.cfg")
 if cfgfile then

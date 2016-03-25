@@ -1,7 +1,7 @@
 -- Default Configuration
-local sshkey = "p"
-local sshmods = {"alt", "ctrl"}
-local sshfn = "iterm"
+local def_sshkey = "p"
+local def_sshmods = {"alt", "ctrl"}
+local def_sshfn = "iterm"
 
 -- Code below here
 
@@ -53,6 +53,11 @@ local sshfns = {
 
 -- Load user configuration.
 local function load_config()
+    -- Reset defaults.
+    sshkey = def_sshkey
+    sshmods = def_sshmods
+    sshfn = def_sshfn
+
     local cfgfile = io.open(HOME.."/.hammerspoon/sshchooser.cfg")
     if cfgfile then
         local env = setmetatable({}, {__index = {

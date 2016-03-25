@@ -4,8 +4,8 @@ if not HOME then
 end
 
 -- Default Configuration
-local sshmods = {"alt", "ctrl"}
 local sshkey = "p"
+local sshmods = {"alt", "ctrl"}
 
 local logger = hs.logger.new('sshchooser', 'info')
 

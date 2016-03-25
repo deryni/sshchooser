@@ -132,9 +132,12 @@ sethotkey()
 
 local function ssh_reload(files)
     for _, file in ipairs(files) do
-        if file:match("/sshchooser.cfg") then
+        if file:match("/config$") or
+            file:match("/known_hosts$")
+        then
+            sshchooser:refreshChoicesCallback()
+        elseif file:match("/sshchooser.cfg") then
             sethotkey()
-            break
         end
     end
 end

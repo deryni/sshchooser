@@ -247,5 +247,7 @@ local function ssh_reload(files)
     end
 end
 
-hs.pathwatcher.new(HOME.."/.ssh", ssh_reload):start()
-hs.pathwatcher.new(HOME.."/.hammerspoon", ssh_reload):start()
+sshwatchers = {
+    hs.pathwatcher.new(HOME.."/.ssh", ssh_reload):start(),
+    hs.pathwatcher.new(HOME.."/.hammerspoon", ssh_reload):start(),
+}

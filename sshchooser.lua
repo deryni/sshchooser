@@ -6,6 +6,7 @@ end
 -- Default Configuration
 local sshkey = "p"
 local sshmods = {"alt", "ctrl"}
+local application = "iterm"
 
 local logger = hs.logger.new('sshchooser', 'info')
 
@@ -39,12 +40,8 @@ local function shell_quote(val)
     return "'"..val:gsub("'", [['\'']]).."'"
 end
 
-local function do_ssh(tab)
-    if not tab then
-        return
-    end
-
-    local ascmd = ([[
+local ascmds = {
+    iterm = [[
         tell application "iTerm"
                 set myterm to (make new terminal)
                 tell myterm
@@ -53,7 +50,21 @@ local function do_ssh(tab)
                         write text "exec ssh %s"
                     end tell
                 end tell
-        end tell]]):format(shell_quote(tab.text))
+        end tell]]
+}
+
+local ascmd = ascmds[application]
+if not ascmd then
+    logger.ef("Invalid application: %s", application)
+    return
+end
+
+local function do_ssh(tab)
+    if not tab then
+        return
+    end
+
+    local ascmd = (ascmds[application]):format(shell_quote(tab.text))
 
     local ok, res = hs.applescript.applescript(ascmd)
     if not ok then

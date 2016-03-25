@@ -42,6 +42,37 @@ if cfgfile then
     end
 end
 
+local sshfns = {
+    iterm = function(host)
+        local ascmd = [[
+        tell application "iTerm"
+                set myterm to (make new terminal)
+                tell myterm
+                    launch session "Default"
+                    tell the last session
+                        write text "exec ssh %s"
+                    end tell
+                end tell
+        end tell]]
+        ascmd = ascmd:format(shell_quote(host))
+
+        local ok, res = hs.applescript.applescript(ascmd)
+        if not ok then
+            if "table" == type(res) then
+                for k, v in pairs(res) do
+                    logger.ef("%s = %s", tostring(k), tostring(v))
+                end
+            else
+                logger.e(res)
+            end
+        end
+    end,
+}
+
+if "string" == type(sshfn) then
+    sshfn = sshfns[sshfn]
+end
+
 local function shell_quote(val)
     if ("number" == type(val)) or tonumber(val) then
         return val
@@ -54,22 +85,8 @@ local function shell_quote(val)
     return "'"..val:gsub("'", [['\'']]).."'"
 end
 
-local ascmds = {
-    iterm = [[
-        tell application "iTerm"
-                set myterm to (make new terminal)
-                tell myterm
-                    launch session "Default"
-                    tell the last session
-                        write text "exec ssh %s"
-                    end tell
-                end tell
-        end tell]]
-}
-
-local ascmd = ascmds[sshfn]
-if not ascmd then
-    logger.ef("Invalid application: %s", sshfn)
+if not sshfns[sshfn] then
+    logger.ef("Invalid SSH function: %s", sshfn)
     return
 end
 
@@ -78,18 +95,7 @@ local function do_ssh(tab)
         return
     end
 
-    local ascmd = (ascmds[sshfn]):format(shell_quote(tab.text))
-
-    local ok, res = hs.applescript.applescript(ascmd)
-    if not ok then
-        if "table" == type(res) then
-            for k, v in pairs(res) do
-                logger.ef("%s = %s", tostring(k), tostring(v))
-            end
-        else
-            logger.e(res)
-        end
-    end
+    return sshfns[sshfn](tab.text)
 end
 
 local function ssh_get_hosts()

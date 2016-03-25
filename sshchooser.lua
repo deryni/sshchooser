@@ -101,14 +101,6 @@ if not sshfn then
     return
 end
 
-local function do_ssh(tab)
-    if (not tab) or (not tab.text) then
-        return
-    end
-
-    return sshfns[sshfn](tab.text)
-end
-
 local function ssh_get_hosts()
     local ssh_hosts = {}
     -- Store seen hosts to avoid duplicates.
@@ -202,6 +194,16 @@ local function ssh_get_hosts()
 end
 
 local sshchooser
+
+local function do_ssh(tab)
+    if (not tab) or (not tab.text) then
+        return
+    end
+
+    sshchooser:query("")
+
+    return sshfns[sshfn](tab.text)
+end
 
 local function get_ssh_chooser()
     if not sshchooser then

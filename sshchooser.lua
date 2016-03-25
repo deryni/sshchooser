@@ -234,6 +234,7 @@ local function ssh_reload(files)
             sshchooser:refreshChoicesCallback()
             break
         elseif file:match("/sshchooser.cfg$") then
+            load_config()
             sethotkey()
         end
     end

@@ -74,8 +74,15 @@ local function load_config()
 
         local chunk, err = load(cfgstr, "sshchooser.cfg", "t", env)
         if chunk then
-            chunk()
+            local ok, ret = pcall(chunk)
+            if not ok then
+                err = ret
+            end
+        end
 
+        if err then
+            logger.wf("Failed to load sshchooser.cfg: %s", err)
+        else
             if rawget(env, "sshkey") then
                 sshkey = env.sshkey
             end
@@ -91,8 +98,6 @@ local function load_config()
                     logger.wf("Invalid SSH launcher: %s", env.sshfn)
                 end
             end
-        elseif err then
-            logger.wf("Failed to load sshchooser.cfg: %s", err)
         end
     end
 end

@@ -84,8 +84,8 @@ local function load_config()
 
     sshkey = env.sshkey
     sshmods = env.sshmods
-    if (("string" == env.sshfn) and sshfns[env.sshfn]) or
-       ("function" == sshfn)
+    if (("string" == type(env.sshfn)) and sshfns[env.sshfn]) or
+       ("function" == type(env.sshfn))
     then
         sshfn = env.sshfn
     else

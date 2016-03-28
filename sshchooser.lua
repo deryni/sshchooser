@@ -91,6 +91,8 @@ local function load_config()
                     logger.wf("Invalid SSH launcher: %s", env.sshfn)
                 end
             end
+        elseif err then
+            logger.wf("Failed to load sshchooser.cfg: %s", err)
         end
     end
 end

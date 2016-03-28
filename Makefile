@@ -3,6 +3,7 @@ HSHOME = $$HOME/.hammerspoon
 all:
 	@echo "Run 'make install' to install (via default method)."
 	@echo "Run 'make copy' to install via copy."
+	@echo "Run 'make link' to install via hard-link (falls back to copy)."
 	@echo "Run 'make install' to install via symlink (will not auto-reload on change with pathwatcher)."
 	@echo
 	@echo 'Hammerspoon directory: $(HSHOME)'
@@ -18,6 +19,10 @@ install: copy
 .PHONY: symlink
 symlink: $(SOURCES)
 	@ln -v -s '$(abspath $^)' "$(HSHOME)/"
+
+.PHONY: link
+link: $(SOURCES)
+	@ln -v '$(abspath $^)' "$(HSHOME)/" || $(MAKE) copy
 
 .PHONY: copy
 copy: $(SOURCES)

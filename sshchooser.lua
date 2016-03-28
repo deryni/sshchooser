@@ -1,7 +1,7 @@
 -- Default Configuration
-local def_sshkey = "p"
-local def_sshmods = {"alt", "ctrl"}
-local def_sshfn = "iterm"
+local def_sshkey, sshkey = "p"
+local def_sshmods, sshmods = {"alt", "ctrl"}
+local def_sshfn, sshfn = "iterm"
 
 -- Code below here
 
@@ -53,22 +53,19 @@ local sshfns = {
 
 -- Load user configuration.
 local function load_config()
-    -- Reset defaults.
-    sshkey = def_sshkey
-    sshmods = def_sshmods
-    sshfn = def_sshfn
+    -- Start with the defaults.
+    local env = setmetatable({
+        sshkey = def_sshkey,
+        sshmods = def_sshmods,
+        sshfn = def_sshfn,
+    }, {__index = {
+        HOME = HOME,
+        logger = logger,
+        shell_quote = shell_quote,
+    }})
 
     local cfgfile = io.open(HOME.."/.hammerspoon/sshchooser.cfg")
     if cfgfile then
-        local env = setmetatable({}, {__index = {
-            HOME = HOME,
-            logger = logger,
-            sshkey = sshkey,
-            sshmods = sshmods,
-            sshfn = sshfn,
-            shell_quote = shell_quote,
-        }})
-
         local cfgstr = cfgfile:read("*a")
         cfgfile:close()
 
@@ -82,23 +79,17 @@ local function load_config()
 
         if err then
             logger.wf("Failed to load sshchooser.cfg: %s", err)
-        else
-            if rawget(env, "sshkey") then
-                sshkey = env.sshkey
-            end
-            if rawget(env, "sshmods") then
-                sshmods = env.sshmods
-            end
-            if rawget(env, "sshfn") then
-                if (("string" == env.sshfn) and sshfns[env.sshfn]) or
-                   ("function" == sshfn)
-                then
-                    sshfn = env.sshfn
-                else
-                    logger.wf("Invalid SSH launcher: %s", env.sshfn)
-                end
-            end
         end
+    end
+
+    sshkey = env.sshkey
+    sshmods = env.sshmods
+    if (("string" == env.sshfn) and sshfns[env.sshfn]) or
+       ("function" == sshfn)
+    then
+        sshfn = env.sshfn
+    else
+        logger.wf("Invalid SSH launcher: %s", env.sshfn)
     end
 end
 load_config()

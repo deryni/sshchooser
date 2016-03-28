@@ -152,9 +152,8 @@ local function ssh_get_hosts()
                         curhosts[#curhosts + 1] = h
                     end
                 else
-                    local tmp
-                    s, e, tmp = l:find("^Hostname (%S+)")
-                    if s then
+                    local tmp = l:match("^Hostname (%S+)")
+                    if tmp then
                         canonical = tmp
                     end
                 end
@@ -176,7 +175,7 @@ local function ssh_get_hosts()
         end
 
         for l in f:lines() do
-            local st, en, hostname = string.find(l, "^([^%s,]+)")
+            local hostname = l:match("^([^%s,]+)")
             if hostname and (not ssh_hosts_hack[hostname]) then
                 ssh_hosts[#ssh_hosts + 1] = {
                     text = hostname,

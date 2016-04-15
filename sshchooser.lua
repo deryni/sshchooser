@@ -139,7 +139,7 @@ local function ssh_get_hosts()
         if f then
             local curhosts, canonical
             for l in f:lines() do
-                local s, e = l:find("^%s*Host ")
+                local s, e = l:find("^Host ")
                 if s then
                     -- About to start a new Host entry so add entries for all
                     -- previously seen hosts.
@@ -151,7 +151,7 @@ local function ssh_get_hosts()
                         curhosts[#curhosts + 1] = h
                     end
                 else
-                    local tmp = l:match("^%s*Hostname (%S+)")
+                    local tmp = l:match("^Hostname (%S+)")
                     if tmp then
                         canonical = tmp
                     end

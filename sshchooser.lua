@@ -110,7 +110,7 @@ local function ssh_get_hosts()
             return
         end
 
-        -- Add static hostname to our duplicate table.
+        -- Add canonical hostname to our duplicate table.
         if hostname and (not hostname:find("%%")) then
             ssh_hosts_hack[hostname] = true
         end

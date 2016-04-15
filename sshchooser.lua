@@ -150,7 +150,8 @@ local function ssh_get_hosts()
 
                     -- Reset current host information.
                     curhosts, canonical = {}, nil
-                    for h in l:sub(e+1):gmatch("%S+") do
+                    local hoststr = l:sub(e+1)
+                    for h in hoststr:gmatch("%S+") do
                         curhosts[#curhosts + 1] = h
                     end
                 else

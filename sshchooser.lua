@@ -141,8 +141,11 @@ local function ssh_get_hosts()
             for l in f:lines() do
                 local s, e = l:find("^Host ")
                 if s then
+                    -- About to start a new Host entry so add entries for all
+                    -- previously seen hosts.
                     add_config_entry(curhosts, canonical)
 
+                    -- Reset current host information.
                     curhosts, canonical = {}, nil
                     for h in l:sub(e):gmatch("%S+") do
                         curhosts[#curhosts + 1] = h
@@ -154,6 +157,7 @@ local function ssh_get_hosts()
                     end
                 end
             end
+            -- Add entries for the last Host in the file.
             add_config_entry(curhosts, canonical)
             f:close()
         end

@@ -139,6 +139,9 @@ local function ssh_get_hosts()
         if f then
             local curhosts, canonical
             for l in f:lines() do
+                -- Trim leading and trailing spaces.
+                l = l:gsub("^%s*", ""):gsub("%s*$", "")
+
                 local s, e = l:find("^Host ")
                 if s then
                     -- About to start a new Host entry so add entries for all

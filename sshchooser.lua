@@ -152,7 +152,7 @@ local function ssh_get_hosts()
                     curhosts, canonical = {}, nil
                     local hoststr = l:sub(e+1)
                     for h in hoststr:gmatch("%S+") do
-                        if hoststr:find("*", 1, true) then
+                        if not h:find("*", 1, true) then
                             curhosts[#curhosts + 1] = h
                         end
                     end

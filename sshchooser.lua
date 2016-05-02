@@ -32,7 +32,7 @@ local sshfns = {
                 tell myterm
                     launch session "Default"
                     tell the last session
-                        write text "exec ssh %s"
+                        write text "unset HISTFILE; tput clear; exec ssh %s"
                     end tell
                 end tell
         end tell]]

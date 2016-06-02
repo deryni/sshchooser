@@ -74,6 +74,7 @@ local function load_config()
         HOME = HOME,
         logger = logger,
         shell_quote = shell_quote,
+        escape_quotes = escape_quotes,
     }})
 
     local cfgfile = io.open(HOME.."/.hammerspoon/sshchooser.cfg")

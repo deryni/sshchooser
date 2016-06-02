@@ -41,6 +41,15 @@ local sshfns = {
     iterm = function(host)
         local ascmd = [[
         tell application "iTerm"
+            create window with profile "Default" command "ssh %s"
+        end tell]]
+
+        return do_applescript(ascmd:format(escape_quotes(host)))
+    end,
+
+    iterm_old = function(host)
+        local ascmd = [[
+        tell application "iTerm"
                 set myterm to (make new terminal)
                 tell myterm
                     launch session "Default"

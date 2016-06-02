@@ -24,6 +24,10 @@ local function shell_quote(val)
     return "'"..val:gsub("'", [['\'']]).."'"
 end
 
+local function escape_quotes(val)
+    return val:gsub('"', [[\"]])
+end
+
 local function do_applescript(ascmd)
     local ok, out, rawout = hs.applescript.applescript(ascmd)
     if not ok then

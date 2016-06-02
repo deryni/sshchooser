@@ -25,14 +25,10 @@ local function shell_quote(val)
 end
 
 local function do_applescript(ascmd)
-    local ok, res = hs.applescript.applescript(ascmd)
+    local ok, out, rawout = hs.applescript.applescript(ascmd)
     if not ok then
-        if "table" == type(res) then
-            for k, v in pairs(res) do
-                logger.ef("%s = %s", tostring(k), tostring(v))
-            end
-        else
-            logger.e(res)
+        for k, v in pairs(rawout) do
+            logger.ef("%s = %s", tostring(k), tostring(v))
         end
     end
 end

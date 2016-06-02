@@ -41,7 +41,7 @@ local sshfns = {
                 tell myterm
                     launch session "Default"
                     tell the last session
-                        write text "unset HISTFILE; tput clear; exec ssh %s"
+                        write text "unset HISTFILE; tput clear; printf '\\x1b]50;ClearScrollback\\x07'; exec ssh %s"
                     end tell
                 end tell
         end tell]]

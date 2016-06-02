@@ -24,6 +24,19 @@ local function shell_quote(val)
     return "'"..val:gsub("'", [['\'']]).."'"
 end
 
+local function do_applescript(ascmd)
+    local ok, res = hs.applescript.applescript(ascmd)
+    if not ok then
+        if "table" == type(res) then
+            for k, v in pairs(res) do
+                logger.ef("%s = %s", tostring(k), tostring(v))
+            end
+        else
+            logger.e(res)
+        end
+    end
+end
+
 local sshfns = {
     iterm = function(host)
         local ascmd = [[
@@ -38,16 +51,7 @@ local sshfns = {
         end tell]]
         ascmd = ascmd:format(shell_quote(host))
 
-        local ok, res = hs.applescript.applescript(ascmd)
-        if not ok then
-            if "table" == type(res) then
-                for k, v in pairs(res) do
-                    logger.ef("%s = %s", tostring(k), tostring(v))
-                end
-            else
-                logger.e(res)
-            end
-        end
+        return do_applescript(ascmd)
     end,
 }
 

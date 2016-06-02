@@ -30,10 +30,9 @@ end
 
 local function do_applescript(ascmd)
     local ok, out, rawout = hs.applescript.applescript(ascmd)
-    if not ok then
-        for k, v in pairs(rawout) do
-            logger.ef("%s = %s", tostring(k), tostring(v))
-        end
+    local lvl = ok and "i" or "e"
+    for k, v in pairs(rawout) do
+        logger[lvl](("%s = %s"):format(tostring(k), tostring(v)))
     end
 end
 

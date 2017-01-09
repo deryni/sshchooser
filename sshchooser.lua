@@ -115,6 +115,9 @@ if not sshfn then
     return
 end
 
+-- subText value for IP entries. Set below after version detection.
+local subTexthack
+
 local function ssh_get_hosts()
     local ssh_hosts = {}
     -- Store seen hosts to avoid duplicates.
@@ -201,7 +204,7 @@ local function ssh_get_hosts()
             if hostname and (not ssh_hosts_hack[hostname]) then
                 ssh_hosts[#ssh_hosts + 1] = {
                     text = hostname,
-                    subText = "",
+                    subText = subTexthack,
                 }
                 -- Add host to our duplicate table.
                 ssh_hosts_hack[hostname] = true
@@ -229,6 +232,18 @@ local function do_ssh(tab)
 end
 
 local function get_ssh_chooser()
+    local hsversion, newversion = hs.processInfo.version, "0.9.51"
+
+    local ok, semver = pcall(require, "semver")
+    if ok and semver then
+        newversion = semver(newversion)
+        hsversion = semver(hsversion)
+    end
+
+    -- Hammerspoon 0.9.51 and newer handle nil as subText well.
+    -- Earlier versions do not (so we use a blank string).
+    subtexthack = (hsversion < newversion) and "" or nil
+
     if not sshchooser then
         sshchooser = hs.chooser.new(do_ssh)
 

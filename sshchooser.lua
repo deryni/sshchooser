@@ -3,15 +3,13 @@ local def_sshkey, sshkey = "p"
 local def_sshmods, sshmods = {"alt", "ctrl"}
 local def_sshfn, sshfn = "iterm"
 
--- Code below here
-
+-- Basic sanity check
 local HOME = HOME or os.getenv("HOME")
 if not HOME then
     return
 end
 
-local logger = hs.logger.new('sshchooser', 'info')
-
+--{{{ Helper functions
 local function shell_quote(val)
     if ("number" == type(val)) or tonumber(val) then
         return val
@@ -27,6 +25,11 @@ end
 local function escape_quotes(val)
     return val:gsub('"', [[\"]])
 end
+--}}} Helper functions
+
+-- Code below here
+
+local logger = hs.logger.new('sshchooser', 'info')
 
 local function do_applescript(ascmd)
     local ok, out, rawout = hs.applescript.applescript(ascmd)

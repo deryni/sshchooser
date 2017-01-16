@@ -49,7 +49,10 @@ local sshfns = {
     iterm = function(host)
         local ascmd = [[
         tell application "iTerm"
-            create window with profile "Default" command "ssh %s"
+            set newWindow to (create window with profile "Default" command "ssh %s")
+            tell newWindow
+                select
+            end tell
         end tell]]
 
         return do_applescript(ascmd:format(escape_quotes(host)))

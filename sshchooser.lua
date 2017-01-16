@@ -34,8 +34,14 @@ local logger = hs.logger.new('sshchooser', 'info')
 local function do_applescript(ascmd)
     local ok, out, rawout = hs.osascript.applescript(ascmd)
     local lvl = ok and "i" or "e"
-    for k, v in pairs(rawout) do
-        logger[lvl](("%s = %s"):format(tostring(k), tostring(v)))
+    if type(rawout) == "table" then
+        for k, v in pairs(rawout) do
+            logger[lvl](("%s = %s"):format(tostring(k), tostring(v)))
+        end
+    else
+        if rawout ~= "null()" then
+            logger[lvl](("%s: %s"):format(type(rawout), tostring(rawout)))
+        end
     end
 end
 

@@ -307,8 +307,9 @@ local function make_ssh_menu()
 
     for _, v in pairs(ssh_host_tab) do
         menutab[#menutab + 1] = {
-            title = v,
-            fn = make_menu_cb(v),
+            title = v.text,
+            tooltip = v.subText,
+            fn = make_menu_cb(v.text),
         }
     end
 

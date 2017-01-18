@@ -9,7 +9,7 @@ local def_sshkey, sshkey = "p"
 local def_sshmods, sshmods = {"alt", "ctrl"}
 local def_sshfn, sshfn = "iterm"
 
---{{{ Helper functions
+-- {{{ Helper functions
 local function shell_quote(val)
     if ("number" == type(val)) or tonumber(val) then
         return val
@@ -25,12 +25,13 @@ end
 local function escape_quotes(val)
     return val:gsub('"', [[\"]])
 end
---}}} Helper functions
+-- }}} Helper functions
 
 -- Code below here
 
 local logger = hs.logger.new('sshchooser', 'info')
 
+-- {{{ Terminal launchers
 local function do_applescript(ascmd)
     local ok, out, rawout = hs.osascript.applescript(ascmd)
     local lvl = ok and "i" or "e"
@@ -74,6 +75,7 @@ local sshfns = {
         return do_applescript(ascmd)
     end,
 }
+-- }}} Terminal launchers
 
 -- Load user configuration.
 local function load_config()

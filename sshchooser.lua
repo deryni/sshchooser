@@ -33,7 +33,7 @@ local logger = hs.logger.new('sshchooser', 'info')
 
 -- {{{ Terminal launchers
 local function do_applescript(ascmd)
-    local ok, out, rawout = hs.osascript.applescript(ascmd)
+    local ok, _, rawout = hs.osascript.applescript(ascmd)
     local lvl = ok and "i" or "e"
     if type(rawout) == "table" then
         for k, v in pairs(rawout) do

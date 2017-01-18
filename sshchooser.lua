@@ -320,6 +320,9 @@ end
 -- Initialize hosts table.
 load_hosts()
 
+-- Create chooser.
+sshchooser = get_ssh_chooser()
+
 make_ssh_menu()
 
 -- Store hot key binding.
@@ -331,7 +334,6 @@ local function set_hot_key()
     end
 
     hotkey = hs.hotkey.bind(sshmods, sshkey, function()
-        sshchooser = get_ssh_chooser()
         return sshchooser:show()
     end)
 end

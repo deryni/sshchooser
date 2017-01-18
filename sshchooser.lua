@@ -292,7 +292,7 @@ local function get_ssh_chooser()
 
     -- Hammerspoon 0.9.51 and newer handle nil as subText well.
     -- Earlier versions do not (so we use a blank string).
-    subtexthack = (hsversion < newversion) and "" or nil
+    subTexthack = (hsversion < newversion) and "" or nil
 
     if not sshchooser then
         sshchooser = hs.chooser.new(do_ssh)

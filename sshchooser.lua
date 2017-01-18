@@ -267,9 +267,10 @@ local function get_ssh_chooser()
     return sshchooser
 end
 
+-- Store hot key binding.
 local hotkey
 
-local function sethotkey()
+local function set_hot_key()
     if hotkey then
         hotkey:delete()
     end
@@ -280,7 +281,7 @@ local function sethotkey()
     end)
 end
 
-sethotkey()
+set_hot_key()
 
 local function ssh_reload(files)
     for _, file in ipairs(files) do
@@ -291,7 +292,7 @@ local function ssh_reload(files)
             break
         elseif file:match("/sshchooser.cfg$") then
             load_config()
-            sethotkey()
+            set_hot_key()
         end
     end
 end

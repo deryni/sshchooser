@@ -74,6 +74,17 @@ local sshfns = {
 
         return do_applescript(ascmd)
     end,
+
+    ["terminal.app"] = function(host)
+        local ascmd = [[
+        tell application "Terminal"
+            do script "unset -v HISTFILE; tput clear; exec ssh %s"
+            activate
+        end tell]]
+        ascmd = ascmd:format(shell_quote(host))
+
+        return do_applescript(ascmd)
+    end,
 }
 -- }}} Terminal launchers
 

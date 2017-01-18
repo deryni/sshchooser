@@ -140,7 +140,10 @@ end
 -- subText value for IP entries. Set below after version detection.
 local subTexthack
 
-local function ssh_get_hosts()
+-- Store accumulated ssh hosts.
+local ssh_host_tab
+
+local function populate_hosts_table()
     local ssh_hosts = {}
     -- Store seen hosts to avoid duplicates.
     -- Can't use the ssh_hosts table as hammerspoon doesn't like that.
@@ -269,7 +272,7 @@ local function get_ssh_chooser()
     if not sshchooser then
         sshchooser = hs.chooser.new(do_ssh)
 
-        sshchooser:choices(ssh_get_hosts)
+        sshchooser:choices(ssh_host_tab)
         sshchooser:rows(5)
         sshchooser:width(40)
         sshchooser:searchSubText(true)
@@ -277,6 +280,19 @@ local function get_ssh_chooser()
 
     return sshchooser
 end
+
+local function load_hosts()
+    -- Repopulate hosts table.
+    ssh_host_tab = populate_hosts_table()
+
+    -- Refresh choices in chooser.
+    if sshchooser then
+        sshchooser:choices(ssh_host_tab)
+    end
+end
+
+-- Initialize hosts table.
+load_hosts()
 
 -- Store hot key binding.
 local hotkey

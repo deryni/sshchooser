@@ -284,16 +284,26 @@ end
 set_hot_key()
 
 local function ssh_reload(files)
+    local reload_hosts
+    local reload_config
+
     for _, file in ipairs(files) do
         if file:match("/config$") or
             file:match("/known_hosts$")
         then
-            sshchooser:refreshChoicesCallback()
-            break
+            reload_hosts = true
         elseif file:match("/sshchooser.cfg$") then
-            load_config()
-            set_hot_key()
+            reload_config = true
         end
+    end
+
+    if reload_hosts then
+        load_hosts()
+    end
+
+    if reload_config then
+        load_config()
+        set_hot_key()
     end
 end
 

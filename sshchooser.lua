@@ -291,9 +291,6 @@ local function load_hosts()
     end
 end
 
--- Initialize hosts table.
-load_hosts()
-
 local sshmenu
 
 local function make_menu_cb(host)
@@ -319,6 +316,9 @@ local function make_ssh_menu()
         sshmenu:setTitle("SSH")
     end
 end
+
+-- Initialize hosts table.
+load_hosts()
 
 make_ssh_menu()
 

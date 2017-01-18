@@ -294,6 +294,33 @@ end
 -- Initialize hosts table.
 load_hosts()
 
+local sshmenu
+
+local function make_menu_cb(host)
+    return function ()
+        return sshfns[sshfn](host)
+    end
+end
+
+local function make_ssh_menu()
+    local menutab = {}
+
+    for _, v in pairs(ssh_host_tab) do
+        menutab[#menutab + 1] = {
+            title = v,
+            fn = make_menu_cb(v),
+        }
+    end
+
+    if not sshmenu then
+        sshmenu = hs.menubar.new()
+        sshmenu:setMenu(menutab)
+        sshmenu:setTitle("SSH")
+    end
+end
+
+make_ssh_menu()
+
 -- Store hot key binding.
 local hotkey
 

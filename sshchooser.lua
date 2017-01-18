@@ -210,6 +210,10 @@ local function populate_hosts_table()
         end
     end
 
+    local function hashed_hostname(hostname)
+        return hostname:sub(1,1) == "|"
+    end
+
     local function get_known_hosts()
         local f, err = io.open(HOME.."/.ssh/known_hosts")
         if not f then
@@ -223,7 +227,8 @@ local function populate_hosts_table()
 
         for l in f:lines() do
             local hostname = l:match("^([^%s,]+)")
-            if hostname and (not ssh_hosts_hack[hostname]) then
+            if hostname and (not hashed_hostname(hostname)) and
+               (not ssh_hosts_hack[hostname]) then
                 ssh_hosts[#ssh_hosts + 1] = {
                     text = hostname,
                     subText = subTexthack,

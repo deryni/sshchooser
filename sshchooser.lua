@@ -1,13 +1,13 @@
--- Default Configuration
-local def_sshkey, sshkey = "p"
-local def_sshmods, sshmods = {"alt", "ctrl"}
-local def_sshfn, sshfn = "iterm"
-
 -- Basic sanity check
 local HOME = HOME or os.getenv("HOME")
 if not HOME then
     return
 end
+
+-- Default Configuration
+local def_sshkey, sshkey = "p"
+local def_sshmods, sshmods = {"alt", "ctrl"}
+local def_sshfn, sshfn = "iterm"
 
 --{{{ Helper functions
 local function shell_quote(val)

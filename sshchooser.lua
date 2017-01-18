@@ -140,9 +140,6 @@ end
 -- subText value for IP entries. Set below after version detection.
 local subTexthack
 
--- Store accumulated ssh hosts.
-local ssh_host_tab
-
 local function populate_hosts_table()
     local ssh_hosts = {}
     -- Store seen hosts to avoid duplicates.
@@ -266,6 +263,8 @@ end
 
 -- The ssh chooser
 local sshchooser
+-- Store accumulated ssh hosts.
+local ssh_host_tab
 
 -- The ssh menu
 local sshmenu

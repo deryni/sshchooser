@@ -244,7 +244,33 @@ local function populate_hosts_table()
     return ssh_hosts
 end
 
+local function make_menu_cb(host)
+    return function ()
+        return sshfns[sshfn](host)
+    end
+end
+
+local function populate_menu_table(ssh_hosts)
+    local menutab = {}
+
+    for _, v in pairs(ssh_hosts) do
+        menutab[#menutab + 1] = {
+            title = v.text,
+            tooltip = v.subText,
+            fn = make_menu_cb(v.text),
+        }
+    end
+
+    return menutab
+end
+
+-- The ssh chooser
 local sshchooser
+
+-- The ssh menu
+local sshmenu
+-- SSH menu table.
+local ssh_menu_tab
 
 local function do_ssh(tab)
     if (not tab) or (not tab.text) then
@@ -281,6 +307,18 @@ local function get_ssh_chooser()
     return sshchooser
 end
 
+local function get_ssh_menu()
+    local menu = sshmenu
+
+    if not menu then
+        menu = hs.menubar.new()
+        menu:setMenu(ssh_menu_tab)
+        menu:setTitle("SSH")
+    end
+
+    return menu
+end
+
 local function load_hosts()
     -- Repopulate hosts table.
     ssh_host_tab = populate_hosts_table()
@@ -289,31 +327,12 @@ local function load_hosts()
     if sshchooser then
         sshchooser:choices(ssh_host_tab)
     end
-end
 
-local sshmenu
+    ssh_menu_tab = populate_menu_table(ssh_host_tab)
 
-local function make_menu_cb(host)
-    return function ()
-        return sshfns[sshfn](host)
-    end
-end
-
-local function make_ssh_menu()
-    local menutab = {}
-
-    for _, v in pairs(ssh_host_tab) do
-        menutab[#menutab + 1] = {
-            title = v.text,
-            tooltip = v.subText,
-            fn = make_menu_cb(v.text),
-        }
-    end
-
-    if not sshmenu then
-        sshmenu = hs.menubar.new()
-        sshmenu:setMenu(menutab)
-        sshmenu:setTitle("SSH")
+    -- Refresh choices in menu.
+    if sshmenu then
+        sshmenu:setMenu(ssh_menu_tab)
     end
 end
 
@@ -323,7 +342,8 @@ load_hosts()
 -- Create chooser.
 sshchooser = get_ssh_chooser()
 
-make_ssh_menu()
+--  Create menu.
+sshmenu = get_ssh_menu()
 
 -- Store hot key binding.
 local hotkey

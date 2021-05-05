@@ -98,7 +98,7 @@ local function doSsh(tab)
         return
     end
 
-    local host = tab.text or tab.title
+    local host = tab.text or tab.host or tab.title
     if not host then
         return
     end
@@ -164,11 +164,17 @@ local function makeMenu(hosts)
     local hostMenu = {}
 
     for i,host in ipairs(hosts) do
-        hostMenu[#hostMenu + 1] = {
+        local m = {
             title = host.text,
             fn = doSshMenu,
             tooltip = host.subText,
         }
+        if host.subText and (not host.subText:match('%s')) then
+            m.host = m.title
+            m.title = m.title..(' (%s)'):format(m.tooltip)
+        end
+
+        hostMenu[#hostMenu + 1] = m
     end
 
     return hostMenu

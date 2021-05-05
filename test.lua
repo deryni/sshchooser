@@ -126,6 +126,26 @@ describe('config parsing', function ()
         local t = pfns.get_config_hosts(h, s, 'testdata/user/config')
         assert.are.same(expected, t)
     end)
+
+    it('should not duplicate hostnames', function()
+        local expected = {
+            {
+                text = 'foobar',
+                hosts = {
+                    'foobar.tld',
+                },
+            },
+            {
+                text = 'baxx.tld',
+                hosts = {
+                    'baxx',
+                },
+            },
+        }
+        local h, s = {}, {}
+        local t = pfns.get_config_hosts(h, s, 'testdata/duplicatehost/config')
+        assert.are.same(expected, t)
+    end)
 end)
 
 describe('known_host parsing', function ()

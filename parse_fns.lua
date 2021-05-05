@@ -37,7 +37,11 @@ local function add_config_entry(hosts, seen, hostpats)
                 cEntry.hosts = {}
             end
 
-            cEntry.hosts[#cEntry.hosts + 1] = hostpat
+            -- Skip this hostpat if we've already seen it (i.e. a duplicate
+            -- hostpat or if the canonical hostname duplicates a hostpat).
+            if not seen[hostpat] then
+                cEntry.hosts[#cEntry.hosts + 1] = hostpat
+            end
 
             -- Add the hostpat to our seen list so we don't duplicate those either.
             seen[hostpat] = cEntry

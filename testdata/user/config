@@ -1,0 +1,8 @@
+Host somehost
+    User hostuser   
+
+Host otherhost
+User otheruser
+
+Host midspacehost
+  User     midspaceuser   

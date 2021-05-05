@@ -1,0 +1,11 @@
+   Host leadspace
+ Hostname leadcanon
+
+Host trailspace   
+Hostname trailcanon    
+
+  Host bothspace  
+ Hostname bothcanon  
+
+Host    middlespace
+Hostname     middlecanon

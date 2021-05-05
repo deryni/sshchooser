@@ -1,0 +1,11 @@
+Host a
+
+Host build?
+    Hostname %h.something.eng
+
+Host b
+
+Host *.ignored.tld
+    RandomSetting true
+
+Host c

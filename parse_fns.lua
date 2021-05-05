@@ -38,7 +38,6 @@ local function add_config_entry(hosts, seen, hostpats)
             end
 
             cEntry.hosts[#cEntry.hosts + 1] = hostpat
-            cEntry.hosts[hostpat] = hostpat
 
             -- Add the hostpat to our seen list so we don't duplicate those either.
             seen[hostpat] = cEntry
@@ -214,7 +213,6 @@ function parse_fns.get_known_hosts(hosts, seen, knownhostsfile)
             end
             if not cEntry.hosts[khost] then
                 cEntry.hosts[#cEntry.hosts + 1] = khost
-                cEntry.hosts[khost] = khost
             end
             -- Add the khost to our seen list so we don't duplicate it later.
             seen[khost] = cEntry

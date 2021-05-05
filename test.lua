@@ -55,8 +55,6 @@ describe('config parsing', function ()
                 text = 'canonhost',
                 hosts = {
                     'foo', 'bar',
-                    foo = 'foo',
-                    bar = 'bar',
                 },
             }
         }
@@ -92,28 +90,24 @@ describe('config parsing', function ()
                 text = 'leadcanon',
                 hosts = {
                     'leadspace',
-                    leadspace = 'leadspace',
                 },
             },
             {
                 text = 'trailcanon',
                 hosts = {
                     'trailspace',
-                    trailspace = 'trailspace',
                 },
             },
             {
                 text = 'bothcanon',
                 hosts = {
                     'bothspace',
-                    bothspace = 'bothspace',
                 },
             },
             {
                 text = 'middlecanon',
                 hosts = {
                     'middlespace',
-                    middlespace = 'middlespace',
                 },
             },
         }
@@ -192,7 +186,6 @@ describe('known_host parsing', function ()
                 text = 'onlyonce',
                 hosts = {
                     'newbutstill',
-                    newbutstill = 'newbutstill',
                 },
             },
         }
@@ -265,7 +258,6 @@ describe('reverse order parsing', function()
                 text = '192.168.2.179',
                 hosts = {
                     '192.168.4.179',
-                    ['192.168.4.179'] = '192.168.4.179',
                 },
             },
             {text = '192.168.3.179'},
@@ -273,11 +265,6 @@ describe('reverse order parsing', function()
                 text = 'andme@canonhost',
                 hosts = {
                     'additional', 'add3', 'foo', 'bar', 'andme',
-                    foo = 'foo',
-                    bar = 'bar',
-                    andme = 'andme',
-                    additional = 'additional',
-                    add3 = 'add3',
                 },
             },
             {text = '192.168.18.179'},
@@ -288,7 +275,6 @@ describe('reverse order parsing', function()
                 text = 'flastname@host1.corp.bigtech.com',
                 hosts = {
                     'host1',
-                    host1 = 'host1',
                 },
             },
             {text = 'spoon-r1.bigtech.com'},

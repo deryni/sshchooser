@@ -1,0 +1,25 @@
+Host *
+    ServerAliveInterval 210
+
+Host devsys
+    User devuser
+
+Host host1 host1.corp.bigtech.com
+    Hostname host1.corp.bigtech.com
+    User flastname
+
+Host spoon-r1 spoon-r2
+    Hostname %h.bigtech.com
+
+Host foo bar
+    Hostname canonhost
+
+Host build?
+    Hostname %h.something.eng
+
+Host *.ignored.tld
+    RandomSetting true
+
+Host andme
+    User andme
+    Hostname canonhost

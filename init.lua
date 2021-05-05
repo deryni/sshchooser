@@ -6,7 +6,7 @@
 ---
 --- Start new SSH session from a chooser or menu
 ---
---- Download: [https://github.com/Hammerspoon/Spoons/raw/master/Spoons/SSHChooser.spoon.zip](https://github.com/Hammerspoon/Spoons/raw/master/Spoons/SSHChooser.spoon.zip)
+--- Download: [https://github.com/Hammerspoon/Spoons/raw/master/Spoons/SSHChooser.spoon.zip](SSHChooser.spoon.zip)
 
 local obj = {
     name = 'SSHChooser',

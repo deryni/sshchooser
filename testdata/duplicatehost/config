@@ -1,0 +1,7 @@
+Host foobar foobar.tld
+    Hostname foobar.tld
+    Compression no
+
+Host baxx.tld baxx
+    Hostname baxx.tld
+    Compression no

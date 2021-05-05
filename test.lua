@@ -49,12 +49,12 @@ describe('config parsing', function ()
         assert.are.same(expected, t)
     end)
 
-    it('should handle a canonical hostname', function()
+    it('should include the canonical hostname', function()
         local expected = {
             {
-                text = 'canonhost',
+                text = 'foo',
                 hosts = {
-                    'foo', 'bar',
+                    'bar', 'canonhost',
                 },
             }
         }
@@ -87,27 +87,27 @@ describe('config parsing', function ()
     it('should extra handle leading, trailing, and middle spaces', function()
         local expected = {
             {
-                text = 'leadcanon',
+                text = 'leadspace',
                 hosts = {
-                    'leadspace',
+                    'leadcanon',
                 },
             },
             {
-                text = 'trailcanon',
+                text = 'trailspace',
                 hosts = {
-                    'trailspace',
+                    'trailcanon',
                 },
             },
             {
-                text = 'bothcanon',
+                text = 'bothspace',
                 hosts = {
-                    'bothspace',
+                    'bothcanon',
                 },
             },
             {
-                text = 'middlecanon',
+                text = 'middlespace',
                 hosts = {
-                    'middlespace',
+                    'middlecanon',
                 },
             },
         }
@@ -118,12 +118,35 @@ describe('config parsing', function ()
 
     it('should parse User lines', function ()
         local expected = {
-            {text = 'hostuser@somehost'},
-            {text = 'otheruser@otherhost'},
-            {text = 'midspaceuser@midspacehost'},
+            {
+                text = 'somehost',
+                username = 'hostuser',
+            },
+            {
+                text = 'otherhost',
+                username = 'otheruser',
+            },
+            {
+                text = 'midspacehost',
+                username = 'midspaceuser',
+            },
         }
         local h, s = {}, {}
         local t = pfns.get_config_hosts(h, s, 'testdata/user/config')
+        assert.are.same(expected, t)
+    end)
+
+    it('should not prefer a canonical IP address over a hostname', function()
+        local expected = {
+            {
+                text = 'foo',
+                hosts = {
+                    'bar', '1.2.3.4',
+                },
+            }
+        }
+        local h, s = {}, {}
+        local t = pfns.get_config_hosts(h, s, 'testdata/canonip/config')
         assert.are.same(expected, t)
     end)
 
@@ -247,14 +270,14 @@ describe('combined parsing', function ()
         local expected = {
             {text = 'devuser@devsys'},
             {
-                text = 'flastname@host1.corp.bigtech.com',
-                subText = 'host1',
+                text = 'flastname@host1',
+                subText = 'host1.corp.bigtech.com',
             },
             {text = 'spoon-r1.bigtech.com'},
             {text = 'spoon-r2.bigtech.com'},
             {
-                text = 'andme@canonhost',
-                subText = 'foo bar andme additional add3',
+                text = 'andme@foo',
+                subText = 'bar canonhost andme additional add3',
             },
             {text = '192.168.5.179'},
             {
@@ -282,20 +305,25 @@ describe('reverse order parsing', function()
             },
             {text = '192.168.3.179'},
             {
-                text = 'andme@canonhost',
+                text = 'additional',
                 hosts = {
-                    'additional', 'add3', 'foo', 'bar', 'andme',
+                    'canonhost', 'add3', 'foo', 'bar', 'andme',
                 },
+                username = 'andme',
             },
             {text = '192.168.18.179'},
             {text = 'cahost'},
 
-            {text = 'devuser@devsys'},
             {
-                text = 'flastname@host1.corp.bigtech.com',
+                text = 'devsys',
+                username = 'devuser',
+            },
+            {
+                text = 'host1',
                 hosts = {
-                    'host1',
+                    'host1.corp.bigtech.com',
                 },
+                username = 'flastname',
             },
             {text = 'spoon-r1.bigtech.com'},
             {text = 'spoon-r2.bigtech.com'},

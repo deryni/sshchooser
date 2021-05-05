@@ -2,77 +2,61 @@
 
 local parse_fns = {}
 
+local function do_entry(hosts, seen, newhosts)
+    local cEntry
+
+    for _, newhost in ipairs(newhosts) do
+        if seen[newhost] then
+            cEntry = seen[newhost]
+            break
+        end
+    end
+
+    if not cEntry then
+        cEntry = {
+            text = newhosts[1],
+        }
+        hosts[#hosts + 1] = cEntry
+        seen[newhosts[1]] = cEntry
+    end
+
+    for _, newhost in ipairs(newhosts) do
+        if not seen[newhost] then
+            if not cEntry.hosts then
+                cEntry.hosts = {}
+            end
+            cEntry.hosts[#cEntry.hosts + 1] = newhost
+        end
+        seen[newhost] = cEntry
+    end
+
+    if newhosts.username then
+        cEntry.username = newhosts.username
+    end
+
+    return cEntry
+end
+
 local function add_config_entry(hosts, seen, hostpats)
     if (not hostpats) or (#hostpats == 0) then
         return
     end
 
     -- Entries with %h in them need every Host to be its own chooser entry.
-    if hostpats.canonical and hostpats.canonical:find('%h', 1, true) then
+    if hostpats.realhost and hostpats.realhost:find('%h', 1, true) then
         for _, hostpat in ipairs(hostpats) do
-            local fullname = hostpats.canonical:gsub("%%h", hostpat)
-            add_config_entry(hosts, seen, {fullname, username = hostpats.username})
+            local fullname = hostpats.realhost:gsub("%%h", hostpat)
+            do_entry(hosts, seen, {fullname, username = hostpats.username})
         end
 
-        return
+       return
     end
 
-    -- Use the canonical hostname or the first host pattern as the "primary" hostname
-    local primaryHost = hostpats.canonical or hostpats[1]
+    -- Otherwise just add the real hostname to the hostpats list.
+    hostpats[#hostpats + 1] = hostpats.realhost
+    hostpats.realhost = nil
 
-    -- Find host entry if we previously created one
-    local cEntry = seen[primaryHost]
-
-    if not cEntry then
-        cEntry = {
-            text = primaryHost
-        }
-        seen[primaryHost] = cEntry
-        hosts[#hosts + 1] = cEntry
-    end
-
-    for _, hostpat in ipairs(hostpats) do
-        if primaryHost ~= hostpat then
-            if not cEntry.hosts then
-                cEntry.hosts = {}
-            end
-
-            -- Skip this hostpat if we've already seen it (i.e. a duplicate
-            -- hostpat or if the canonical hostname duplicates a hostpat).
-            if not seen[hostpat] then
-                cEntry.hosts[#cEntry.hosts + 1] = hostpat
-            end
-
-            -- Add the hostpat to our seen list so we don't duplicate those either.
-            seen[hostpat] = cEntry
-        end
-    end
-
-    -- Handle the unlikely case where we found a duplicate host with a
-    -- canonical hostname _after_ finding a previous entry for this host by
-    -- mutating the cEntry so that the canonical host is the primary host.
-    if hostpats.canonical and (cEntry.text ~= hostpats.canonical) then
-        for i,v in ipairs(cEntry.hosts) do
-            if v == hostpats.canonical then
-                -- Swap the previous primary host into the hosts table.
-                cEntry.hosts[i] = cEntry.text
-                break
-            end
-        end
-
-        -- Add the previous primary host into the hosts table.
-        cEntry.hosts[cEntry.text] = cEntry.text
-
-        -- Remove the new primary host from the hosts table.
-        cEntry.hosts[hostpats.canonical] = nil
-        -- Set the new primary host to the canonical one.
-        cEntry.text = hostpats.canonical
-    end
-
-    if hostpats.username then
-        cEntry.text = hs.styledtext.new(hostpats.username..'@', {color = hs.drawing.color.x11.gray}) .. hs.styledtext.new(cEntry.text)
-        hostpats.username = nil
-    end
+    do_entry(hosts, seen, hostpats)
 end
 
 function parse_fns.get_config_hosts(hosts, seen, configFile)
@@ -103,10 +87,10 @@ function parse_fns.get_config_hosts(hosts, seen, configFile)
                 end
             end
         else
-            -- Found canonical hostname for current host patterns
+            -- Found real hostname for current host patterns
             local tmp = line:match("^Hostname +(%S+)")
             if tmp then
-                hostpats.canonical = tmp
+                hostpats.realhost = tmp
             end
             -- Use User to format a leading `user@` on the chooser (and menu?) labels.
             tmp = line:match("^User +(%S+)")
@@ -130,17 +114,14 @@ end
 function parse_fns.get_known_hosts(hosts, seen, knownhostsfile)
     local f, err = io.open(knownhostsfile)
     if not f then
-        --[[
-        logger.i("Failed to open known_hosts file.")
-        if err then
-            logger.i(err)
-        end
-        --]]
-
         return hosts
     end
 
+    local klines = {}
+
     for line in f:lines() do
+        local khosts = {}
+
         local s, e, hoststr = line:gsub('^%s*', ''):find('^([^%s]+)')
         if not hoststr then
             -- Ignore blank lines
@@ -156,9 +137,6 @@ function parse_fns.get_known_hosts(hosts, seen, knownhostsfile)
             hoststr = ''
         end
 
-        local cEntry
-        local khosts = {}
-
         -- Collect host entries for this line
         for hostpat in hoststr:gmatch("[^,]+") do
             -- Only handle non-negated host patterns
@@ -168,53 +146,21 @@ function parse_fns.get_known_hosts(hosts, seen, knownhostsfile)
                     hostpat = hostpat:gsub('^%[', '')
                     hostpat = hostpat:gsub('%]:%d+$', '')
                     if not hashed_hostname(hostpat) then
-                        if not seen[hostpat] then
-                            khosts[#khosts + 1] = hostpat
-                            khosts[hostpat] = hostpat
-                        else
-                            -- Grab the matching cEntry
-                            cEntry = seen[hostpat]
-                        end
+                        khosts[#khosts + 1] = hostpat
                     end
                 end
             end
         end
 
-        if (not cEntry) and (#khosts >= 1) then
-            local khost = khosts[1]
-
-            -- We don't have a cEntry for this set of hosts yet.
-            -- "Promote" the first host to be the "primary" host.
-            cEntry = {
-                text = khost,
-            }
-            -- Remove the new "primary" host from the hosts list.
-            table.remove(khosts, 1)
-            khosts[khost] = nil
-            if #khosts > 0 then
-                cEntry.hosts = khosts
-            end
-
-            seen[khost] = cEntry
-
-            -- Add the new cEntry to our list.
-            hosts[#hosts + 1] = cEntry
-        end
-
-        -- We've got a cEntry one way or the other now. Make sure it has all
-        -- the new hosts and the seen table is updated.
-        for i,khost in ipairs(khosts) do
-            if not cEntry.hosts then
-                cEntry.hosts = {}
-            end
-            if not cEntry.hosts[khost] then
-                cEntry.hosts[#cEntry.hosts + 1] = khost
-            end
-            -- Add the khost to our seen list so we don't duplicate it later.
-            seen[khost] = cEntry
+        if #khosts > 0 then
+            klines[#klines + 1] = khosts
         end
     end
     f:close()
+
+    for _,kline in ipairs(klines) do
+        do_entry(hosts, seen, kline)
+    end
 
     return hosts
 end
@@ -229,6 +175,10 @@ function parse_fns.parse_config(sshDir)
         if v.hosts then
             v.subText = table.concat(v.hosts, ' ')
             v.hosts = nil
+        end
+        if v.username then
+            v.text = hs.styledtext.new(v.username..'@', {color = hs.drawing.color.x11.gray}) .. hs.styledtext.new(v.text)
+            v.username = nil
         end
     end
 

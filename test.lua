@@ -1,4 +1,5 @@
 #!/usr/bin/env busted
+-- luacheck: read globals describe it assert assert.are assert.are.same
 
 local pfns = dofile('parse_fns.lua')
 

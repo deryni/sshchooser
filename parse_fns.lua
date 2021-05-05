@@ -1,4 +1,5 @@
 -- Copyright (c) 2016 Etan Reisner
+-- luacheck: read globals hs
 
 local parse_fns = {}
 
@@ -112,7 +113,7 @@ local function hashed_hostname(hostname)
 end
 
 function parse_fns.get_known_hosts(hosts, seen, knownhostsfile)
-    local f, err = io.open(knownhostsfile)
+    local f = io.open(knownhostsfile)
     if not f then
         return hosts
     end
@@ -122,7 +123,7 @@ function parse_fns.get_known_hosts(hosts, seen, knownhostsfile)
     for line in f:lines() do
         local khosts = {}
 
-        local s, e, hoststr = line:gsub('^%s*', ''):find('^([^%s]+)')
+        local _, e, hoststr = line:gsub('^%s*', ''):find('^([^%s]+)')
         if not hoststr then
             -- Ignore blank lines
             hoststr = ''
@@ -171,13 +172,14 @@ function parse_fns.parse_config(sshDir)
     parse_fns.get_config_hosts(hosts, seen, sshDir .. '/config')
     parse_fns.get_known_hosts(hosts, seen, sshDir .. '/known_hosts')
 
-    for i,v in ipairs(hosts) do
+    for _, v in ipairs(hosts) do
         if v.hosts then
             v.subText = table.concat(v.hosts, ' ')
             v.hosts = nil
         end
         if v.username then
-            v.text = hs.styledtext.new(v.username..'@', {color = hs.drawing.color.x11.gray}) .. hs.styledtext.new(v.text)
+            local s = hs.styledtext.new(v.username..'@', {color = hs.drawing.color.x11.gray})
+            v.text = s .. hs.styledtext.new(v.text)
             v.username = nil
         end
     end

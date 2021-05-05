@@ -1,4 +1,6 @@
 -- Copyright (c) 2016 Etan Reisner
+-- luacheck: read globals hs
+-- luacheck: max comment line length 125
 
 --- === SSHChooser ===
 ---
@@ -75,9 +77,9 @@ local launchHelpers = {
     end,
 
     do_applescript = function (ascmd)
-        local ok, _, rawout = hs.osascript.applescript(ascmd)
-        local lvl = ok and 'i' or 'e'
+        local ok, _, rawout = hs.osascript.applescript(ascmd) -- luacheck: no unused
         --[[
+        local lvl = ok and 'i' or 'e'
         if type(rawout) == 'table' then
             for k, v in pairs(rawout) do
                 obj.logger[lvl](('%s = %s'):format(tostring(k), tostring(v)))
@@ -115,23 +117,23 @@ local function doSsh(tab)
 end
 
 local function newChooser()
-    local chooser = hs.chooser.new(doSsh)
+    local _chooser = hs.chooser.new(doSsh)
 
-    chooser:rows(5)
-    chooser:width(40)
-    chooser:searchSubText(true)
-    chooser:placeholderText('SSH host')
+    _chooser:rows(5)
+    _chooser:width(40)
+    _chooser:searchSubText(true)
+    _chooser:placeholderText('SSH host')
 
     -- Clear the query and reset the scroll on dismissal.
-    chooser:hideCallback(function()
-        chooser:query('')
-        chooser:selectedRow(0)
+    _chooser:hideCallback(function()
+        _chooser:query('')
+        _chooser:selectedRow(0)
     end)
 
-    return chooser
+    return _chooser
 end
 
-local function doSshMenu(mods, tab)
+local function doSshMenu(mods, tab) -- luacheck: no unused args
     if (not tab) or (not tab.title) then
         return
     end
@@ -144,15 +146,15 @@ local function newMenu()
         return
     end
 
-    local menu = hs.menubar.new()
+    local _menu = hs.menubar.new()
 
-    menu:setTitle('SSH')
+    _menu:setTitle('SSH')
 
-    return menu
+    return _menu
 end
 
 local function checkConfigChanged(paths)
-    for i, v in ipairs(paths) do
+    for _, v in ipairs(paths) do
         if v:match('/config$') or v:match('/known_hosts$') then
             obj:loadHosts()
             break
@@ -163,7 +165,7 @@ end
 local function makeMenu(hosts)
     local hostMenu = {}
 
-    for i,host in ipairs(hosts) do
+    for _, host in ipairs(hosts) do
         local m = {
             title = host.text,
             fn = doSshMenu,
@@ -283,7 +285,7 @@ end
 ---
 --- Parameters:
 ---  * mapping - A table containing hotkey objifier/key details for the following items:
----   * showChooser - Show the SSH session chooser 
+---   * showChooser - Show the SSH session chooser
 function obj:bindHotkeys(mapping)
     local spec = {
         showChooser = showChooser

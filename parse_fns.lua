@@ -116,14 +116,6 @@ function parse_fns.get_config_hosts(hosts, seen, configFile)
     -- Add entries for the last Host in the file.
     add_config_entry(hosts, seen, hostpats)
 
-    --[[
-    for i,v in ipairs(hosts) do
-        if v.hosts then
-            v.subText = table.concat(v.hosts, ' ')
-            --v.hosts = nil
-        end
-    end
-    --]]
     return hosts
 end
 

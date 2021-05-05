@@ -92,7 +92,7 @@ function parse_fns.get_config_hosts(hosts, seen, configFile)
             if tmp then
                 hostpats.realhost = tmp
             end
-            -- Use User to format a leading `user@` on the chooser (and menu?) labels.
+            -- Save User to format a leading `user@` on the labels.
             tmp = line:match("^User +(%S+)")
             if tmp then
                 hostpats.username = tmp

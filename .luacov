@@ -1,0 +1,5 @@
+modules = {
+    ['parse_fns'] = 'parse_fns.lua',
+}
+
+deletestats = true

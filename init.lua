@@ -198,12 +198,13 @@ end
 
 --- SSHChooser.loadHosts()
 --- Method
---- Load the SSH configuration and Known Hosts and populate the chooser and
---- menu. Normally called automatically by pathwatcher should only need to be
---- called manually if start() is not used.
+--- Load the SSH configuration and Known Hosts and populate the chooser and menu.
 ---
 --- Parameters:
 ---  * None
+---
+--- Notes:
+---  * Normally called automatically by pathwatcher. Should only need to be called manually if start() is not used.
 function obj:loadHosts()
     local hosts = parseFns.parse_config(sshDir)
 
@@ -233,8 +234,7 @@ end
 
 --- SSHChooser:start()
 --- Method
---- Activate the pathwatcher for SSH configuration changes.
---- Creates the chooser and menu (if enabled).
+--- Activate the pathwatcher for SSH configuration changes. Creates the chooser and menu (if enabled).
 ---
 --- Parameters:
 ---  * None
@@ -257,8 +257,7 @@ end
 
 --- SSHChooser:stop()
 --- Method
---- Stops the pathwatcher for SSH configuration changes.
---- Deletes the chooser and menu.
+--- Stops the pathwatcher for SSH configuration changes. Deletes the chooser and menu.
 ---
 --- Parameters:
 ---  * None
